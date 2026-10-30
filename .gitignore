@@ -1,0 +1,28 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Build files
+dist/
+build/
+
+# Vite cache
+.vite/
+.vite-temp/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Uploaded documents
+server/uploads/*
+!server/uploads/.gitkeep
+
+# System files
+.DS_Store
+Thumbs.db
