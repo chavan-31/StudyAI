@@ -1,4 +1,6 @@
-const API_URL = "http://localhost:5000/api";
+
+const API_URL =
+  import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 // ================================
 // REGISTER
@@ -241,7 +243,12 @@ export async function generateQuiz(quizData, token) {
 // SUBMIT QUIZ ANSWER
 // ================================
 
-export async function submitQuizAnswer(quizId, userAnswer, timeSpent, token) {
+export async function submitQuizAnswer(
+  quizId,
+  userAnswer,
+  timeSpent,
+  token
+) {
   if (!token) {
     throw new Error("You are not logged in.");
   }
