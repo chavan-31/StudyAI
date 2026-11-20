@@ -2,14 +2,15 @@ const express = require("express");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
-const User = require("../models/User");
+// Corrected filename: user.js (lowercase)
+const User = require("../models/user");
 
 const router = express.Router();
 
 // Generate JWT token
 const generateToken = (userId) => {
   if (!process.env.JWT_SECRET) {
-    throw new Error("JWT_SECRET is missing in .env file");
+    throw new Error("JWT_SECRET is missing in environment variables");
   }
 
   return jwt.sign({ userId: userId.toString() }, process.env.JWT_SECRET, {
