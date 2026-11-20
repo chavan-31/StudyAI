@@ -1,0 +1,979 @@
+
+/* ==========================================
+   COGNIFY AI - AI ASSISTANT
+   Emerald / Obsidian Interface
+========================================== */
+
+.cognify-ai-page {
+  --ai-bg: #101c1a;
+  --ai-panel: #172723;
+  --ai-panel-2: #1d332c;
+  --ai-accent: #25d9a0;
+  --ai-mint: #b7f7d8;
+  --ai-text: #edf7f1;
+  --ai-muted: #9aafa7;
+  --ai-border: rgba(183, 247, 216, 0.13);
+
+  min-height: 100vh;
+  color: var(--ai-text);
+  background: var(--ai-bg);
+  font-family: Inter, "Segoe UI", sans-serif;
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.cognify-ai-page * {
+  box-sizing: border-box;
+}
+
+.cognify-bg-glow {
+  position: absolute;
+  width: 420px;
+  height: 420px;
+  border-radius: 50%;
+  filter: blur(110px);
+  opacity: 0.12;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.glow-left {
+  background: #25d9a0;
+  top: 80px;
+  left: -230px;
+}
+
+.glow-right {
+  background: #128365;
+  right: -220px;
+  top: 430px;
+}
+
+.cognify-grid-background {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.12;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(183, 247, 216, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(183, 247, 216, 0.035) 1px, transparent 1px);
+  background-size: 55px 55px;
+  mask-image: linear-gradient(to bottom, black, transparent 80%);
+}
+
+/* HEADER */
+
+.cognify-ai-header {
+  min-height: 78px;
+  padding: 13px 5%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 22px;
+  position: relative;
+  z-index: 2;
+  border-bottom: 1px solid var(--ai-border);
+  background: rgba(16, 28, 26, 0.85);
+  backdrop-filter: blur(18px);
+}
+
+.cognify-ai-brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ai-text);
+  text-align: left;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.cognify-ai-brand-icon {
+  width: 43px;
+  height: 43px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  color: #08251b;
+  background: linear-gradient(135deg, #50edb7, #16a878);
+  font-size: 23px;
+  font-weight: 900;
+  box-shadow: 0 5px 24px rgba(37, 217, 160, 0.2);
+}
+
+.cognify-ai-brand-text strong,
+.cognify-ai-brand-text small {
+  display: block;
+}
+
+.cognify-ai-brand-text strong {
+  font-size: 17px;
+}
+
+.cognify-ai-brand-text small {
+  margin-top: 4px;
+  color: var(--ai-muted);
+  font-size: 10px;
+}
+
+.cognify-ai-nav {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.cognify-ai-nav button {
+  padding: 10px 14px;
+  border: 0;
+  border-radius: 9px;
+  color: var(--ai-muted);
+  background: transparent;
+  cursor: pointer;
+  font-size: 12px;
+  transition: 0.2s ease;
+}
+
+.cognify-ai-nav button:hover,
+.cognify-ai-nav button.active {
+  color: var(--ai-mint);
+  background: rgba(37, 217, 160, 0.1);
+}
+
+.cognify-context-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 15px;
+  border: 1px solid rgba(37, 217, 160, 0.3);
+  border-radius: 10px;
+  background: rgba(37, 217, 160, 0.08);
+  color: var(--ai-mint);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.2s;
+  flex-shrink: 0;
+}
+
+.cognify-context-button:hover {
+  background: rgba(37, 217, 160, 0.17);
+  transform: translateY(-2px);
+}
+
+.cognify-context-button span {
+  font-size: 17px;
+}
+
+/* MAIN */
+
+.cognify-ai-main {
+  width: min(1120px, 92%);
+  margin: 0 auto;
+  padding: 35px 0 25px;
+}
+
+/* HERO */
+
+.cognify-ai-hero {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 55px;
+  min-height: 260px;
+  padding: 5px 25px 28px;
+}
+
+.cognify-ai-visual {
+  width: 225px;
+  height: 225px;
+  display: grid;
+  place-items: center;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.ai-visual-core {
+  width: 105px;
+  height: 105px;
+  border-radius: 34px;
+  display: grid;
+  place-items: center;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(145deg, #45e9b1, #087e5b);
+  color: #06291e;
+  box-shadow:
+    0 0 35px rgba(37, 217, 160, 0.35),
+    0 0 85px rgba(37, 217, 160, 0.13);
+  animation: cognifyCoreFloat 4s ease-in-out infinite;
+}
+
+.ai-visual-core > span {
+  font-size: 57px;
+  position: relative;
+  z-index: 1;
+}
+
+.ai-core-shine {
+  position: absolute;
+  inset: -60%;
+  background: linear-gradient(
+    110deg,
+    transparent 42%,
+    rgba(255, 255, 255, 0.5) 50%,
+    transparent 58%
+  );
+  transform: rotate(25deg);
+  animation: cognifyShine 5s ease-in-out infinite;
+}
+
+.ai-visual-orbit {
+  position: absolute;
+  border: 1px solid rgba(37, 217, 160, 0.23);
+  border-radius: 50%;
+  animation: cognifyOrbit 17s linear infinite;
+}
+
+.orbit-a {
+  width: 150px;
+  height: 150px;
+}
+
+.orbit-b {
+  width: 190px;
+  height: 190px;
+  border-style: dashed;
+  animation-duration: 25s;
+  animation-direction: reverse;
+}
+
+.orbit-c {
+  width: 220px;
+  height: 220px;
+  border-color: rgba(37, 217, 160, 0.1);
+  animation-duration: 32s;
+}
+
+.ai-orbit-dot {
+  width: 9px;
+  height: 9px;
+  position: absolute;
+  border-radius: 50%;
+  background: var(--ai-accent);
+  box-shadow: 0 0 15px var(--ai-accent);
+}
+
+.dot-a {
+  top: 23px;
+  left: 66px;
+}
+
+.dot-b {
+  right: 13px;
+  top: 120px;
+  width: 7px;
+  height: 7px;
+}
+
+.dot-c {
+  bottom: 20px;
+  left: 95px;
+  width: 6px;
+  height: 6px;
+}
+
+@keyframes cognifyCoreFloat {
+  0%, 100% { transform: translateY(0) rotate(-3deg); }
+  50% { transform: translateY(-9px) rotate(3deg); }
+}
+
+@keyframes cognifyOrbit {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes cognifyShine {
+  0%, 35% { transform: translateX(-80%) rotate(25deg); }
+  65%, 100% { transform: translateX(80%) rotate(25deg); }
+}
+
+.cognify-ai-hero-content {
+  max-width: 590px;
+}
+
+.cognify-ai-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--ai-accent);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.cognify-ai-status > span,
+.cognify-agent-online > span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ai-accent);
+  box-shadow: 0 0 12px var(--ai-accent);
+  animation: cognifyStatusPulse 2s infinite;
+}
+
+@keyframes cognifyStatusPulse {
+  50% { opacity: 0.4; }
+}
+
+.cognify-ai-hero-content h1 {
+  margin: 14px 0;
+  font-size: clamp(32px, 4.5vw, 47px);
+  line-height: 1.12;
+  letter-spacing: -1.7px;
+}
+
+.cognify-ai-hero-content h1 span {
+  color: var(--ai-accent);
+}
+
+.cognify-ai-hero-content > p {
+  max-width: 510px;
+  color: var(--ai-muted);
+  font-size: 13px;
+  line-height: 1.8;
+}
+
+.cognify-ai-hero-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+.cognify-ai-hero-tags span {
+  padding: 7px 10px;
+  border: 1px solid var(--ai-border);
+  border-radius: 20px;
+  background: rgba(37, 217, 160, 0.045);
+  color: #bdd7ca;
+  font-size: 10px;
+}
+
+/* CHAT PANEL */
+
+.cognify-chat-panel {
+  border: 1px solid var(--ai-border);
+  border-radius: 20px;
+  overflow: hidden;
+  background: rgba(23, 39, 35, 0.93);
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.18);
+}
+
+.cognify-chat-header {
+  min-height: 75px;
+  padding: 15px 23px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--ai-border);
+  background: rgba(29, 51, 44, 0.65);
+}
+
+.cognify-chat-agent {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cognify-agent-avatar {
+  width: 43px;
+  height: 43px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  color: #08251b;
+  background: linear-gradient(135deg, #50edb7, #16a878);
+  font-size: 24px;
+  box-shadow: 0 5px 18px rgba(37, 217, 160, 0.16);
+}
+
+.cognify-chat-agent strong,
+.cognify-chat-agent span {
+  display: block;
+}
+
+.cognify-chat-agent strong {
+  font-size: 14px;
+}
+
+.cognify-chat-agent span {
+  margin-top: 4px;
+  color: var(--ai-muted);
+  font-size: 11px;
+}
+
+.cognify-agent-online {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--ai-mint);
+  font-size: 11px;
+}
+
+/* CHAT BODY */
+
+.cognify-chat-content {
+  min-height: 300px;
+  max-height: 510px;
+  overflow-y: auto;
+  padding: 22px 24px;
+  scrollbar-width: thin;
+  scrollbar-color: #32604d transparent;
+}
+
+.cognify-messages {
+  display: flex;
+  flex-direction: column;
+  gap: 17px;
+}
+
+.cognify-message-row {
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  animation: cognifyMessageIn 0.3s ease both;
+}
+
+@keyframes cognifyMessageIn {
+  from {
+    opacity: 0;
+    transform: translateY(9px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.message-user {
+  justify-content: flex-end;
+}
+
+.cognify-message-avatar,
+.cognify-user-message-avatar {
+  width: 31px;
+  height: 31px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  border-radius: 10px;
+  font-size: 13px;
+}
+
+.cognify-message-avatar {
+  color: #08251b;
+  background: linear-gradient(135deg, #50edb7, #16a878);
+}
+
+.cognify-user-message-avatar {
+  color: var(--ai-mint);
+  background: #29483b;
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.cognify-message-bubble {
+  max-width: min(75%, 650px);
+  padding: 13px 16px;
+  border-radius: 15px;
+  line-height: 1.65;
+}
+
+.assistant-bubble {
+  border: 1px solid var(--ai-border);
+  border-bottom-left-radius: 4px;
+  background: #1d332c;
+}
+
+.user-bubble {
+  border: 1px solid rgba(37, 217, 160, 0.22);
+  border-bottom-right-radius: 4px;
+  background: linear-gradient(135deg, #176f52, #145b45);
+}
+
+.message-sender {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--ai-accent);
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.user-bubble .message-sender {
+  color: #c0ffe2;
+}
+
+.cognify-message-bubble p {
+  margin: 0;
+  color: #e4f1e9;
+  font-size: 13px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.message-error {
+  border-color: rgba(242, 160, 120, 0.35);
+}
+
+.message-error .message-sender {
+  color: #f2a078;
+}
+
+/* TYPING */
+
+.cognify-typing-bubble {
+  min-width: 75px;
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--ai-border);
+  border-radius: 14px;
+  border-bottom-left-radius: 4px;
+  background: var(--ai-panel-2);
+}
+
+.cognify-typing-bubble span {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--ai-accent);
+  animation: cognifyTyping 1s infinite ease-in-out;
+}
+
+.cognify-typing-bubble span:nth-child(2) {
+  animation-delay: 0.15s;
+}
+
+.cognify-typing-bubble span:nth-child(3) {
+  animation-delay: 0.3s;
+}
+
+@keyframes cognifyTyping {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.45; }
+  30% { transform: translateY(-5px); opacity: 1; }
+}
+
+/* QUICK PROMPTS */
+
+.cognify-quick-prompts {
+  margin-top: 27px;
+  padding-top: 20px;
+  border-top: 1px solid var(--ai-border);
+}
+
+.cognify-quick-heading {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  margin-bottom: 14px;
+}
+
+.cognify-quick-heading > span {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: 11px;
+  background: rgba(37, 217, 160, 0.12);
+  color: var(--ai-accent);
+  font-size: 20px;
+}
+
+.cognify-quick-heading strong,
+.cognify-quick-heading small {
+  display: block;
+}
+
+.cognify-quick-heading strong {
+  font-size: 13px;
+}
+
+.cognify-quick-heading small {
+  margin-top: 4px;
+  color: var(--ai-muted);
+  font-size: 10px;
+}
+
+.cognify-prompt-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.cognify-prompt-card {
+  min-height: 145px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  text-align: left;
+  border: 1px solid var(--ai-border);
+  border-radius: 14px;
+  background: #1b3029;
+  color: var(--ai-text);
+  cursor: pointer;
+  position: relative;
+  transition: 0.25s ease;
+}
+
+.cognify-prompt-card:hover:not(:disabled) {
+  transform: translateY(-4px);
+  border-color: rgba(37, 217, 160, 0.5);
+  background: #234237;
+}
+
+.cognify-prompt-card:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.prompt-icon {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 10px;
+  background: rgba(37, 217, 160, 0.12);
+  color: var(--ai-mint);
+  font-size: 18px;
+  margin-bottom: 11px;
+}
+
+.cognify-prompt-card strong {
+  font-size: 12px;
+}
+
+.cognify-prompt-card small {
+  margin-top: 6px;
+  color: var(--ai-muted);
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+.prompt-arrow {
+  position: absolute;
+  right: 14px;
+  top: 15px;
+  color: var(--ai-accent);
+  font-size: 16px;
+}
+
+/* INPUT */
+
+.cognify-chat-input-area {
+  padding: 17px 22px 14px;
+  border-top: 1px solid var(--ai-border);
+  background: rgba(16, 28, 26, 0.45);
+}
+
+.cognify-input-box {
+  min-height: 57px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 7px 8px 7px 16px;
+  border: 1px solid rgba(183, 247, 216, 0.17);
+  border-radius: 13px;
+  background: #1c3029;
+  transition: 0.2s;
+}
+
+.cognify-input-box:focus-within {
+  border-color: rgba(37, 217, 160, 0.65);
+  box-shadow: 0 0 0 3px rgba(37, 217, 160, 0.07);
+}
+
+.input-sparkle {
+  color: var(--ai-accent);
+  font-size: 19px;
+}
+
+.cognify-input-box input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  color: var(--ai-text);
+  background: transparent;
+  font-family: inherit;
+  font-size: 13px;
+}
+
+.cognify-input-box input::placeholder {
+  color: #81988d;
+}
+
+.cognify-send-button {
+  width: 42px;
+  height: 42px;
+  border: 0;
+  border-radius: 11px;
+  background: linear-gradient(135deg, #50edb7, #16a878);
+  color: #08251b;
+  font-size: 24px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.cognify-send-button:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 5px 17px rgba(37, 217, 160, 0.22);
+}
+
+.cognify-send-button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.cognify-input-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 10px;
+  color: #80968b;
+  font-size: 9px;
+}
+
+/* BOTTOM SHORTCUTS */
+
+.cognify-ai-shortcuts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 13px;
+  margin-top: 19px;
+}
+
+.cognify-ai-shortcuts button {
+  min-width: 0;
+  padding: 15px;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  text-align: left;
+  border: 1px solid var(--ai-border);
+  border-radius: 13px;
+  color: var(--ai-text);
+  background: rgba(23, 39, 35, 0.8);
+  cursor: pointer;
+  transition: 0.22s;
+}
+
+.cognify-ai-shortcuts button:hover {
+  transform: translateY(-3px);
+  border-color: rgba(37, 217, 160, 0.4);
+  background: var(--ai-panel-2);
+}
+
+.shortcut-icon {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  border-radius: 11px;
+  color: var(--ai-mint);
+  background: rgba(37, 217, 160, 0.1);
+  font-size: 19px;
+}
+
+.cognify-ai-shortcuts button > span:nth-child(2) {
+  flex: 1;
+  min-width: 0;
+}
+
+.cognify-ai-shortcuts small,
+.cognify-ai-shortcuts strong {
+  display: block;
+}
+
+.cognify-ai-shortcuts small {
+  color: var(--ai-accent);
+  font-size: 8px;
+  letter-spacing: 1px;
+  margin-bottom: 5px;
+}
+
+.cognify-ai-shortcuts strong {
+  font-size: 11px;
+}
+
+.cognify-ai-shortcuts b {
+  color: var(--ai-accent);
+  font-size: 16px;
+}
+
+.cognify-ai-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 22px 2px 5px;
+  color: #789087;
+  font-size: 10px;
+}
+
+.cognify-ai-footer span:first-child {
+  color: var(--ai-mint);
+  font-weight: 700;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 900px) {
+  .cognify-ai-header {
+    flex-wrap: wrap;
+  }
+
+  .cognify-ai-nav {
+    order: 3;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .cognify-ai-hero {
+    gap: 25px;
+  }
+
+  .cognify-ai-visual {
+    transform: scale(0.85);
+    width: 190px;
+    flex-shrink: 0;
+  }
+}
+
+@media (max-width: 650px) {
+  .cognify-ai-header {
+    padding: 12px 4%;
+    gap: 10px;
+  }
+
+  .cognify-ai-brand-icon {
+    width: 37px;
+    height: 37px;
+  }
+
+  .cognify-ai-brand-text strong {
+    font-size: 15px;
+  }
+
+  .cognify-ai-brand-text small {
+    font-size: 9px;
+  }
+
+  .cognify-context-button {
+    padding: 9px;
+    font-size: 0;
+  }
+
+  .cognify-context-button span {
+    font-size: 18px;
+  }
+
+  .cognify-ai-nav {
+    justify-content: flex-start;
+    overflow-x: auto;
+  }
+
+  .cognify-ai-nav button {
+    flex-shrink: 0;
+    padding: 9px 11px;
+    font-size: 10px;
+  }
+
+  .cognify-ai-main {
+    width: 94%;
+    padding-top: 20px;
+  }
+
+  .cognify-ai-hero {
+    flex-direction: column;
+    gap: 5px;
+    padding: 0 5px 23px;
+    text-align: center;
+  }
+
+  .cognify-ai-visual {
+    width: 190px;
+    height: 175px;
+    transform: scale(0.78);
+    margin: -15px 0 -12px;
+  }
+
+  .cognify-ai-hero-content h1 {
+    font-size: 32px;
+  }
+
+  .cognify-ai-hero-content > p {
+    font-size: 12px;
+  }
+
+  .cognify-ai-hero-tags {
+    justify-content: center;
+  }
+
+  .cognify-chat-header {
+    padding: 13px;
+  }
+
+  .cognify-chat-content {
+    padding: 16px 12px;
+  }
+
+  .cognify-prompt-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .cognify-prompt-card {
+    min-height: 105px;
+  }
+
+  .cognify-message-bubble {
+    max-width: 85%;
+    padding: 11px 12px;
+  }
+
+  .cognify-message-bubble p {
+    font-size: 12px;
+  }
+
+  .cognify-chat-input-area {
+    padding: 13px 11px;
+  }
+
+  .cognify-input-footer {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .cognify-ai-shortcuts {
+    grid-template-columns: 1fr;
+  }
+
+  .cognify-ai-footer {
+    font-size: 9px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cognify-ai-page *,
+  .cognify-ai-page *::before,
+  .cognify-ai-page *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

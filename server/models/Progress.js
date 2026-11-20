@@ -1,51 +1,89 @@
 const mongoose = require("mongoose");
 
 const progressSchema = new mongoose.Schema(
-    {
-        userId: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "User",
-            required: true
-        },
-
-        subject: {
-            type: String,
-            required: true,
-            trim: true
-        },
-
-        topic: {
-            type: String,
-            required: true,
-            trim: true
-        },
-
-        completed: {
-            type: Boolean,
-            default: false
-        },
-
-        score: {
-            type: Number,
-            default: 0,
-            min: 0,
-            max: 100
-        },
-
-        difficulty: {
-            type: String,
-            enum: ["Easy", "Medium", "Hard"],
-            default: "Easy"
-        }
+  {
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+      index: true,
     },
-    {
-        timestamps: true
-    }
+
+    subject: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+
+    topic: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+
+    completed: {
+      type: Boolean,
+      default: false,
+    },
+
+    score: {
+      type: Number,
+      default: 0,
+      min: 0,
+      max: 100,
+    },
+
+    difficulty: {
+      type: String,
+      enum: ["Easy", "Medium", "Hard", "Beginner", "Intermediate", "Advanced"],
+      default: "Beginner",
+    },
+
+    questionsAttempted: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+
+    correctAnswers: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+
+    wrongAnswers: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+
+    accuracy: {
+      type: Number,
+      default: 0,
+      min: 0,
+      max: 100,
+    },
+
+    totalTimeSpent: {
+      type: Number,
+      default: 0,
+      min: 0,
+    },
+
+    lastScore: {
+      type: Number,
+      default: 0,
+      min: 0,
+      max: 100,
+    },
+  },
+  {
+    timestamps: true,
+  },
 );
 
-const Progress = mongoose.model(
-    "Progress",
-    progressSchema
-);
+progressSchema.index({ user: 1, subject: 1, topic: 1 }, { unique: true });
 
-module.exports = Progress;
+module.exports =
+  mongoose.models.LearningProgress ||
+  mongoose.model("LearningProgress", progressSchema);

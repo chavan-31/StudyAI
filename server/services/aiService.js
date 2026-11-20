@@ -5,140 +5,186 @@ const { GoogleGenAI } = require("@google/genai");
 // ==========================================
 
 const createAIClient = () => {
-    const mode = (process.env.AI_MODE || "demo").trim().toLowerCase();
+  const mode = (process.env.AI_MODE || "demo").trim().toLowerCase();
 
-    // Demo mode = no Gemini API call
-    if (mode !== "gemini") {
-        return null;
-    }
+  if (mode !== "gemini") {
+    return null;
+  }
 
-    const apiKey = process.env.GEMINI_API_KEY?.trim();
+  const apiKey = process.env.GEMINI_API_KEY?.trim();
 
-    if (!apiKey) {
-        throw new Error(
-            "GEMINI_API_KEY is missing. Add a valid Gemini API key to server/.env"
-        );
-    }
+  if (!apiKey) {
+    throw new Error("GEMINI_API_KEY is missing in server/.env");
+  }
 
-    return new GoogleGenAI({
-        apiKey
-    });
+  return new GoogleGenAI({ apiKey });
 };
 
 // ==========================================
-// GEMINI CLIENT
+// INITIALIZE CLIENT
 // ==========================================
 
 let ai = null;
 
 try {
-    ai = createAIClient();
+  ai = createAIClient();
 } catch (error) {
-    console.error("Gemini Configuration Error:", error.message);
+  console.error("Gemini Configuration Error:", error.message);
 }
+
+// ==========================================
+// BUILD PERSONALIZED PROMPT
+// ==========================================
+
+const buildPrompt = (prompt, context = {}) => {
+  const student = context.student || {};
+  const currentStudy = context.currentStudy || {};
+
+  const subject = context.subject || currentStudy.subject || "Not specified";
+  const topic = context.topic || currentStudy.topic || "Not specified";
+
+  const learningLevel =
+    context.learningLevel || student.learningLevel || "Beginner";
+
+  const goal =
+    context.goal ||
+    (Array.isArray(context.goals) ? context.goals.join(", ") : context.goals) ||
+    "Understand the topic";
+
+  const weakTopics = Array.isArray(context.weakTopics)
+    ? context.weakTopics.join(", ")
+    : "Not available";
+
+  const completedTopics = Array.isArray(context.completedTopics)
+    ? context.completedTopics.join(", ")
+    : "Not available";
+
+  return `
+You are Cognify AI, a personalized intelligent learning assistant.
+
+STUDENT CONTEXT:
+Subject: ${subject}
+Current Topic: ${topic}
+Learning Level: ${learningLevel}
+Learning Goal: ${goal}
+Weak Topics: ${weakTopics}
+Completed Topics: ${completedTopics}
+
+INSTRUCTIONS:
+1. Explain concepts in simple English.
+2. Adapt explanations to the student's level.
+3. Give practical examples.
+4. Use Java for programming questions unless another language is requested.
+5. Explain code step by step when appropriate.
+6. Provide practice questions when useful.
+7. Help with technical interviews and placements.
+8. Use student context when relevant.
+9. Never invent student progress.
+10. Keep answers structured and accurate.
+
+STUDENT QUESTION:
+${prompt}
+
+Provide a helpful and personalized answer.
+`;
+};
+
+// ==========================================
+// GENERATE GEMINI RESPONSE
+// No repeated retries
+// ==========================================
+
+const generateWithRetry = async (model, contents) => {
+  if (!ai) {
+    throw new Error("Gemini client is not initialized.");
+  }
+
+  console.log("Sending request to Gemini...");
+
+  // Make one request. If it fails, the calling route
+  // can use its local fallback.
+  return await ai.models.generateContent({
+    model,
+    contents,
+  });
+};
 
 // ==========================================
 // GENERATE AI RESPONSE
 // ==========================================
 
-const generateAIResponse = async (prompt) => {
-    const mode = (process.env.AI_MODE || "demo").trim().toLowerCase();
+const generateAIResponse = async (prompt, context = {}) => {
+  const mode = (process.env.AI_MODE || "demo").trim().toLowerCase();
 
-    // ======================================
-    // DEMO MODE
-    // ======================================
+  if (mode !== "gemini") {
+    return {
+      success: true,
+      mode: "demo",
+      response: "Cognify AI Demo Mode: Gemini is disabled.",
+    };
+  }
 
-    if (mode !== "gemini") {
-        return {
-            success: true,
-            mode: "demo",
-            response:
-                "Demo AI response: Gemini is currently disabled. Set AI_MODE=gemini in your .env file to enable Gemini."
-        };
+  if (!prompt || typeof prompt !== "string" || !prompt.trim()) {
+    throw new Error("A valid question is required.");
+  }
+
+  if (!ai) {
+    throw new Error("Gemini client is not initialized. Check your API key.");
+  }
+
+  const model = process.env.GEMINI_MODEL || "gemini-3.6-flash";
+
+  try {
+    const fullPrompt = buildPrompt(prompt.trim(), context);
+
+    const result = await generateWithRetry(model, fullPrompt);
+
+    const aiText = result?.text;
+
+    if (!aiText || !aiText.trim()) {
+      throw new Error("Gemini returned an empty response.");
     }
 
-    // ======================================
-    // CHECK GEMINI CLIENT
-    // ======================================
+    return {
+      success: true,
+      mode: "gemini",
+      model,
+      response: aiText.trim(),
+    };
+  } catch (error) {
+    console.error("Gemini API Error:", error?.message || error);
 
-    if (!ai) {
-        throw new Error(
-            "Gemini client is not initialized. Check GEMINI_API_KEY and AI_MODE."
-        );
+    const message = error?.message || "Gemini request failed.";
+    const lowerMessage = message.toLowerCase();
+
+    if (
+      error?.status === 429 ||
+      lowerMessage.includes("429") ||
+      lowerMessage.includes("quota") ||
+      lowerMessage.includes("rate limit")
+    ) {
+      throw new Error("Gemini API quota exceeded. Try again later.");
     }
 
-    if (!prompt || typeof prompt !== "string") {
-        throw new Error("A valid prompt is required.");
+    if (
+      error?.status === 401 ||
+      error?.status === 403 ||
+      lowerMessage.includes("api key") ||
+      lowerMessage.includes("permission")
+    ) {
+      throw new Error("Gemini authentication failed. Check your API key.");
     }
 
-    // ======================================
-    // GEMINI MODEL
-    // ======================================
-
-    const model =
-        process.env.GEMINI_MODEL || "gemini-2.5-flash";
-
-    try {
-        const response = await ai.models.generateContent({
-            model,
-            contents: prompt
-        });
-
-        const text = response?.text;
-
-        if (!text) {
-            throw new Error("Gemini returned an empty response.");
-        }
-
-        return {
-            success: true,
-            mode: "gemini",
-            model,
-            response: text.trim()
-        };
-    } catch (error) {
-        console.error("Gemini API Error:");
-
-        console.error(error?.message || error);
-
-        // ==================================
-        // RATE LIMIT / QUOTA ERROR
-        // ==================================
-
-        if (
-            error?.status === 429 ||
-            error?.message?.includes("429") ||
-            error?.message?.toLowerCase()?.includes("quota") ||
-            error?.message?.toLowerCase()?.includes("rate limit")
-        ) {
-            throw new Error(
-                "Gemini API rate limit or quota exceeded. Please try again later or use another Gemini API key/project."
-            );
-        }
-
-        // ==================================
-        // AUTHENTICATION ERROR
-        // ==================================
-
-        if (
-            error?.status === 401 ||
-            error?.status === 403 ||
-            error?.message?.toLowerCase()?.includes("api key") ||
-            error?.message?.toLowerCase()?.includes("permission")
-        ) {
-            throw new Error(
-                "Gemini API authentication failed. Check your GEMINI_API_KEY and Google AI API configuration."
-            );
-        }
-
-        // ==================================
-        // GENERAL ERROR
-        // ==================================
-
-        throw new Error(
-            error?.message || "Gemini AI request failed."
-        );
+    if (
+      lowerMessage.includes("model") &&
+      (lowerMessage.includes("not found") ||
+        lowerMessage.includes("unsupported"))
+    ) {
+      throw new Error(`Gemini model ${model} is unavailable.`);
     }
+
+    throw new Error(message);
+  }
 };
 
 // ==========================================
@@ -146,6 +192,8 @@ const generateAIResponse = async (prompt) => {
 // ==========================================
 
 module.exports = {
-    createAIClient,
-    generateAIResponse
+  createAIClient,
+  generateAIResponse,
+  buildPrompt,
+  generateWithRetry,
 };

@@ -1,49 +1,80 @@
 const mongoose = require("mongoose");
 
 const quizSchema = new mongoose.Schema(
-    {
-        user: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "User",
-            required: true
-        },
-
-        studySession: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "StudySession",
-            required: true
-        },
-
-        question: {
-            type: String,
-            required: true
-        },
-
-        correctAnswer: {
-            type: String,
-            required: true
-        },
-
-        userAnswer: {
-            type: String,
-            default: ""
-        },
-
-        isCorrect: {
-            type: Boolean,
-            default: false
-        },
-
-        score: {
-            type: Number,
-            default: 0,
-            min: 0,
-            max: 100
-        }
+  {
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
     },
-    {
-        timestamps: true
-    }
+
+    studySession: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "StudySession",
+      required: true,
+    },
+
+    subject: {
+      type: String,
+      default: "",
+    },
+
+    topic: {
+      type: String,
+      default: "",
+    },
+
+    difficulty: {
+      type: String,
+      enum: ["Beginner", "Intermediate", "Advanced"],
+      default: "Beginner",
+    },
+
+    question: {
+      type: String,
+      required: true,
+    },
+
+    options: {
+      type: [String],
+      default: [],
+    },
+
+    correctAnswer: {
+      type: String,
+      required: true,
+    },
+
+    explanation: {
+      type: String,
+      default: "",
+    },
+
+    userAnswer: {
+      type: String,
+      default: "",
+    },
+
+    isCorrect: {
+      type: Boolean,
+      default: false,
+    },
+
+    score: {
+      type: Number,
+      default: 0,
+      min: 0,
+      max: 100,
+    },
+
+    timeSpent: {
+      type: Number,
+      default: 0,
+    },
+  },
+  {
+    timestamps: true,
+  },
 );
 
 const Quiz = mongoose.model("Quiz", quizSchema);

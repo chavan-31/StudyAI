@@ -26,3 +26,10 @@ server/uploads/*
 # System files
 .DS_Store
 Thumbs.db
+
+
+# Local Git backup
+git-backup/
+
+# Frontend build
+client/dist/
