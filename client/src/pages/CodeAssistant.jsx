@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { getStudySessions } from "../services/api";
 import "./CodeAssistant.css";
 
@@ -51,110 +53,110 @@ function CodeAssistant() {
     loadContext();
   }, []);
 
-  // Format AI response
+  // Extract only the actual AI response from the backend
   const formatResponse = (data) => {
-    const response =
-      data?.result ||
-      data?.answer ||
-      data?.response ||
-      data?.explanation ||
-      data?.message ||
+    let response =
+      data?.response ??
+      data?.result ??
+      data?.answer ??
+      data?.explanation ??
+      data?.message ??
       data;
+
+    // Handle nested JSON response strings if returned by the API
+    if (typeof response === "string") {
+      const trimmed = response.trim();
+
+      if (trimmed.startsWith("{") && trimmed.endsWith("}")) {
+        try {
+          const parsed = JSON.parse(trimmed);
+
+          response =
+            parsed?.response ??
+            parsed?.result ??
+            parsed?.answer ??
+            parsed?.explanation ??
+            response;
+        } catch {
+          // Keep the original response if it is ordinary text
+        }
+      }
+    }
 
     return typeof response === "string"
       ? response
       : JSON.stringify(response, null, 2);
   };
 
-  // Explain code
-  const explainCode = async () => {
+  // Shared API request handler
+  const sendCodeRequest = async (requestMode) => {
     if (!code.trim()) {
-      setResult("Please enter your code before requesting an explanation.");
+      setMode(requestMode);
+      setResult(
+        requestMode === "debug"
+          ? "Please enter your code before debugging."
+          : "Please enter your code before requesting an explanation.",
+      );
       return;
     }
 
     setLoading(true);
-    setMode("explain");
+    setMode(requestMode);
     setResult("");
 
     try {
-      const response = await fetch(
-        "https://studyai-k7bc.onrender.com/api/code/explain",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            language,
-            code,
-            context: studyContext,
-          }),
+      const endpoint =
+        requestMode === "debug"
+          ? "https://studyai-k7bc.onrender.com/api/code/debug"
+          : "https://studyai-k7bc.onrender.com/api/code/explain";
+
+      const body = {
+        language,
+        code,
+        context: studyContext,
+      };
+
+      if (requestMode === "debug") {
+        body.error = error;
+      }
+
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
+        body: JSON.stringify(body),
+      });
 
       const data = await response.json();
 
       if (!response.ok) {
         throw new Error(
-          data.message || data.error || "Unable to explain code.",
+          data.message || data.error || "Unable to process your code.",
         );
       }
 
-      setResult(formatResponse(data));
-    } catch (err) {
-      setResult(`Unable to explain code.\n\n${err.message}`);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Debug code
-  const debugCode = async () => {
-    if (!code.trim()) {
-      setResult("Please enter your code before debugging.");
-      return;
-    }
-
-    if (!error.trim()) {
-      setResult("Please enter the error message you are facing.");
-      return;
-    }
-
-    setLoading(true);
-    setMode("debug");
-    setResult("");
-
-    try {
-      const response = await fetch(
-        "https://studyai-k7bc.onrender.com/api/code/debug",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            language,
-            code,
-            error,
-            context: studyContext,
-          }),
-        },
-      );
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || data.error || "Unable to debug code.");
+      if (data?.success === false) {
+        throw new Error(data.message || data.error || "AI analysis failed.");
       }
 
       setResult(formatResponse(data));
     } catch (err) {
-      setResult(`Unable to debug code.\n\n${err.message}`);
+      console.error(`${requestMode} code error:`, err);
+
+      setResult(
+        `## Something went wrong\n\n${err.message || "Please try again."}`,
+      );
     } finally {
       setLoading(false);
     }
   };
+
+  // Explain code
+  const explainCode = () => sendCodeRequest("explain");
+
+  // Debug code
+  const debugCode = () => sendCodeRequest("debug");
 
   // Clear workspace
   const clearWorkspace = () => {
@@ -411,13 +413,13 @@ public class Main {
                   placeholder="Paste your error message here...
 
 Example:
-error: cannot find symbol
-variable x"
+SyntaxError: invalid syntax"
                   spellCheck="false"
                 />
 
                 <div className="error-hint">
-                  ✦ Leave empty if you only want a code explanation.
+                  ✦ You can leave this empty. Cognify AI can inspect your code
+                  for errors.
                 </div>
               </div>
             </div>
@@ -510,7 +512,31 @@ variable x"
                   <p>Analyzing your code and learning context...</p>
                 </div>
               ) : result ? (
-                <pre className="cognify-code-result-text">{result}</pre>
+                <div className="cognify-code-result-text">
+                  <ReactMarkdown
+                    remarkPlugins={[remarkGfm]}
+                    components={{
+                      pre({ children }) {
+                        return <>{children}</>;
+                      },
+                      code({ className, children, ...props }) {
+                        const isBlock = Boolean(className);
+
+                        return isBlock ? (
+                          <code className={className} {...props}>
+                            {children}
+                          </code>
+                        ) : (
+                          <code className="inline-code" {...props}>
+                            {children}
+                          </code>
+                        );
+                      },
+                    }}
+                  >
+                    {result}
+                  </ReactMarkdown>
+                </div>
               ) : (
                 <div className="cognify-code-empty-result">
                   <h3>Waiting for your code...</h3>
