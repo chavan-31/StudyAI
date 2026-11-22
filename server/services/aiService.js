@@ -90,8 +90,27 @@ Provide a helpful and personalized answer.
 };
 
 // ==========================================
-// GENERATE GEMINI RESPONSE
-// No repeated retries
+// CHECK TEMPORARY GEMINI ERRORS
+// ==========================================
+
+const isTemporaryError = (error) => {
+  const message = error?.message || String(error);
+  const status = Number(error?.status || error?.code);
+
+  return (
+    [500, 502, 503, 504].includes(status) ||
+    message.includes("500") ||
+    message.includes("502") ||
+    message.includes("503") ||
+    message.includes("504") ||
+    message.includes("UNAVAILABLE") ||
+    message.toLowerCase().includes("high demand") ||
+    message.toLowerCase().includes("temporarily")
+  );
+};
+
+// ==========================================
+// GENERATE GEMINI RESPONSE WITH RETRIES
 // ==========================================
 
 const generateWithRetry = async (model, contents) => {
@@ -99,14 +118,35 @@ const generateWithRetry = async (model, contents) => {
     throw new Error("Gemini client is not initialized.");
   }
 
-  console.log("Sending request to Gemini...");
+  const maxAttempts = 3;
 
-  // Make one request. If it fails, the calling route
-  // can use its local fallback.
-  return await ai.models.generateContent({
-    model,
-    contents,
-  });
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      console.log(
+        `Sending request to Gemini (attempt ${attempt}/${maxAttempts})...`,
+      );
+
+      return await ai.models.generateContent({
+        model,
+        contents,
+      });
+    } catch (error) {
+      console.error(`Gemini attempt ${attempt} failed:`, error.message);
+
+      // Retry only temporary server availability errors.
+      if (!isTemporaryError(error) || attempt === maxAttempts) {
+        throw error;
+      }
+
+      const delay = 1500 * Math.pow(2, attempt - 1);
+
+      console.log(`Gemini temporarily unavailable. Retrying in ${delay}ms...`);
+
+      await new Promise((resolve) => setTimeout(resolve, delay));
+    }
+  }
+
+  throw new Error("Gemini request failed after multiple attempts.");
 };
 
 // ==========================================
