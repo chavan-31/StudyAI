@@ -186,7 +186,7 @@ function CodeAssistant() {
 
             const response =
                 await fetch(
-                    "http://localhost:5000/api/code/explain",
+                   "https://studyai-k7bc.onrender.com/api/code/explain",
                     {
 
                         method: "POST",
@@ -298,7 +298,7 @@ function CodeAssistant() {
 
             const response =
                 await fetch(
-                    "http://localhost:5000/api/code/debug",
+                    "https://studyai-k7bc.onrender.com/api/code/debug",
                     {
 
                         method: "POST",

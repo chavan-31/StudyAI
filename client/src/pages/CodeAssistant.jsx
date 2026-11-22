@@ -78,17 +78,20 @@ function CodeAssistant() {
     setResult("");
 
     try {
-      const response = await fetch("http://localhost:5000/api/code/explain", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        "https://studyai-k7bc.onrender.com/api/code/explain",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            language,
+            code,
+            context: studyContext,
+          }),
         },
-        body: JSON.stringify({
-          language,
-          code,
-          context: studyContext,
-        }),
-      });
+      );
 
       const data = await response.json();
 
@@ -123,18 +126,21 @@ function CodeAssistant() {
     setResult("");
 
     try {
-      const response = await fetch("http://localhost:5000/api/code/debug", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        "https://studyai-k7bc.onrender.com/api/code/debug",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            language,
+            code,
+            error,
+            context: studyContext,
+          }),
         },
-        body: JSON.stringify({
-          language,
-          code,
-          error,
-          context: studyContext,
-        }),
-      });
+      );
 
       const data = await response.json();
 

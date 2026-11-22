@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:5000";
+const API_URL = "https://studyai-k7bc.onrender.com";
 
 export const askRAGQuestion = async (question) => {
   const response = await fetch(
