@@ -53,32 +53,44 @@ function CodeAssistant() {
     loadContext();
   }, []);
 
-  // Extract only the actual AI response from the backend
+  // Extract only the actual AI response
   const formatResponse = (data) => {
-    let response =
-      data?.response ??
-      data?.result ??
-      data?.answer ??
-      data?.explanation ??
-      data?.message ??
-      data;
+    let parsed = data;
 
-    // Handle nested JSON response strings if returned by the API
+    // Handle JSON returned as a string
+    if (typeof parsed === "string") {
+      try {
+        parsed = JSON.parse(parsed);
+      } catch {
+        return parsed;
+      }
+    }
+
+    // Extract the response field
+    let response =
+      parsed?.response ??
+      parsed?.result ??
+      parsed?.answer ??
+      parsed?.explanation ??
+      parsed?.message ??
+      parsed;
+
+    // Handle nested JSON inside response
     if (typeof response === "string") {
       const trimmed = response.trim();
 
       if (trimmed.startsWith("{") && trimmed.endsWith("}")) {
         try {
-          const parsed = JSON.parse(trimmed);
+          const nested = JSON.parse(trimmed);
 
           response =
-            parsed?.response ??
-            parsed?.result ??
-            parsed?.answer ??
-            parsed?.explanation ??
+            nested?.response ??
+            nested?.result ??
+            nested?.answer ??
+            nested?.explanation ??
             response;
         } catch {
-          // Keep the original response if it is ordinary text
+          // Keep normal AI text
         }
       }
     }
@@ -140,6 +152,7 @@ function CodeAssistant() {
         throw new Error(data.message || data.error || "AI analysis failed.");
       }
 
+      // Display only Gemini's actual response
       setResult(formatResponse(data));
     } catch (err) {
       console.error(`${requestMode} code error:`, err);
@@ -338,7 +351,6 @@ function CodeAssistant() {
                 </div>
 
                 <span>CODE EDITOR</span>
-
                 <span className="editor-live">● LIVE</span>
               </div>
 
@@ -410,10 +422,10 @@ public class Main {
                 <textarea
                   value={error}
                   onChange={(e) => setError(e.target.value)}
-                  placeholder="Paste your error message here...
+                  placeholder={`Paste your error message here...
 
 Example:
-SyntaxError: invalid syntax"
+SyntaxError: invalid syntax`}
                   spellCheck="false"
                 />
 
@@ -478,7 +490,8 @@ SyntaxError: invalid syntax"
             </div>
 
             <div className="cognify-code-result-status">
-              <span></span> {loading ? "PROCESSING" : "AI READY"}
+              <span></span>
+              {loading ? "PROCESSING" : "AI READY"}
             </div>
           </div>
 
@@ -509,6 +522,7 @@ SyntaxError: invalid syntax"
                     <i></i>
                     <i></i>
                   </div>
+
                   <p>Analyzing your code and learning context...</p>
                 </div>
               ) : result ? (
