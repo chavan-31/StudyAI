@@ -1,3 +1,128 @@
+
+/* ==========================================
+   COGNIFY AI - FUTURISTIC 3D BACKGROUND
+========================================== */
+
 body {
-    margin: 0;
+  min-height: 100vh;
+  margin: 0;
+  background: #080b20 !important;
+  color: #ffffff;
+  overflow-x: hidden;
+}
+
+/* Animated 3D background */
+body::before {
+  content: "";
+  position: fixed;
+  inset: -50%;
+  z-index: -2;
+  pointer-events: none;
+
+  background:
+    radial-gradient(circle at 20% 30%, #9333ea 0, transparent 25%),
+    radial-gradient(circle at 80% 20%, #06b6d4 0, transparent 25%),
+    radial-gradient(circle at 70% 80%, #ec4899 0, transparent 25%),
+    radial-gradient(circle at 20% 85%, #2563eb 0, transparent 25%);
+
+  filter: blur(65px);
+  animation: cognify3DBackground 18s ease-in-out infinite alternate;
+}
+
+@keyframes cognify3DBackground {
+  0% {
+    transform: rotate(0deg) scale(1);
+  }
+  50% {
+    transform: rotate(12deg) scale(1.15);
+  }
+  100% {
+    transform: rotate(-12deg) scale(1.05);
+  }
+}
+
+/* Floating 3D light particles */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+
+  background-image:
+    radial-gradient(circle, #ffffff 1px, transparent 2px),
+    radial-gradient(circle, #22d3ee 2px, transparent 3px),
+    radial-gradient(circle, #c084fc 2px, transparent 3px);
+
+  background-size: 120px 120px, 190px 190px, 250px 250px;
+  background-position: 0 0, 50px 70px, 100px 30px;
+
+  opacity: 0.35;
+  animation: cognifyParticles 25s linear infinite;
+}
+
+@keyframes cognifyParticles {
+  from {
+    background-position: 0 0, 50px 70px, 100px 30px;
+  }
+  to {
+    background-position: 0 -500px, 250px -300px, -200px -400px;
+  }
+}
+
+/* Glassmorphism cards */
+.card,
+.study-card,
+.lesson-card,
+.quiz-card {
+  background: rgba(15, 23, 55, 0.72) !important;
+  color: #ffffff !important;
+  border: 1px solid rgba(139, 92, 246, 0.35) !important;
+  border-radius: 20px !important;
+
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+
+  box-shadow:
+    0 15px 40px rgba(0, 0, 0, 0.25),
+    0 0 20px rgba(124, 58, 237, 0.12);
+
+  transition: all 0.4s ease;
+}
+
+/* 3D hover movement */
+.card:hover,
+.study-card:hover,
+.lesson-card:hover,
+.quiz-card:hover {
+  transform: translateY(-6px) perspective(1000px) rotateX(2deg);
+  border-color: #22d3ee !important;
+  box-shadow: 0 15px 45px rgba(34, 211, 238, 0.2);
+}
+
+/* Headings */
+h1, h2, h3, h4 {
+  color: #ffffff;
+}
+
+/* Buttons */
+button {
+  transition: all 0.3s ease;
+}
+
+button:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(34, 211, 238, 0.3);
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  body::before,
+  body::after {
+    animation: none;
+  }
+
+  * {
+    transition-duration: 0.01ms !important;
+  }
 }

@@ -4,6 +4,7 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/Dashboard";
 import Study from "./pages/Study";
+import StudySessionDetail from "./pages/StudySessionDetail";
 import AIChat from "./pages/AIChat";
 import Context from "./pages/Context";
 import Quiz from "./pages/Quiz";
@@ -19,8 +20,12 @@ function App() {
         <Route path="/" element={<Login />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+
         <Route path="/dashboard" element={<Dashboard />} />
+
         <Route path="/study" element={<Study />} />
+        <Route path="/study/:sessionId" element={<StudySessionDetail />} />
+
         <Route path="/ai" element={<AIChat />} />
         <Route path="/context" element={<Context />} />
         <Route path="/quiz" element={<Quiz />} />

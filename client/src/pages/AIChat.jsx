@@ -13,7 +13,7 @@ function AIChat() {
     {
       role: "ai",
       message:
-        "Hello! I'm Cognify AI, your personal learning companion. What would you like to learn today?",
+        "Hello! I'm MentorIQ AI, your personal learning and coding mentor. What would you like to learn today?",
     },
   ]);
 
@@ -111,10 +111,10 @@ function AIChat() {
           onClick={() => navigate("/dashboard")}
           aria-label="Go to dashboard"
         >
-          <span className="cognify-ai-brand-icon">C</span>
+          <span className="cognify-ai-brand-icon">M</span>
           <span className="cognify-ai-brand-text">
-            <strong>Cognify AI</strong>
-            <small>Context-Aware Learning</small>
+            <strong>MentorIQ AI</strong>
+            <small>Your Personal AI Learning & Coding Mentor</small>
           </span>
         </button>
 
@@ -165,9 +165,9 @@ function AIChat() {
             </h1>
 
             <p>
-              Your intelligent learning companion. Ask questions, understand
-              concepts, practice problems, and grow your skills with
-              personalized AI guidance.
+              Meet MentorIQ AI, your personal AI learning and coding mentor. Ask
+              questions, understand concepts, practice problems, and grow your
+              skills with personalized AI guidance.
             </p>
 
             <div className="cognify-ai-hero-tags">
@@ -184,8 +184,8 @@ function AIChat() {
             <div className="cognify-chat-agent">
               <div className="cognify-agent-avatar">✦</div>
               <div>
-                <strong>Cognify AI</strong>
-                <span>Your Personal AI Tutor</span>
+                <strong>MentorIQ AI</strong>
+                <span>Your Personal AI Learning & Coding Mentor</span>
               </div>
             </div>
 
@@ -215,7 +215,7 @@ function AIChat() {
                     } ${msg.error ? "message-error" : ""}`}
                   >
                     <span className="message-sender">
-                      {msg.role === "user" ? "You" : "Cognify AI"}
+                      {msg.role === "user" ? "You" : "MentorIQ AI"}
                     </span>
                     <p>{msg.message}</p>
                   </div>
@@ -246,7 +246,7 @@ function AIChat() {
                 <div className="cognify-quick-heading">
                   <span>✧</span>
                   <div>
-                    <strong>Get started with Cognify</strong>
+                    <strong>Get started with MentorIQ</strong>
                     <small>Choose a prompt to begin learning</small>
                   </div>
                 </div>
@@ -280,9 +280,9 @@ function AIChat() {
                 type="text"
                 value={question}
                 onChange={(event) => setQuestion(event.target.value)}
-                placeholder="Ask Cognify AI anything..."
+                placeholder="Ask MentorIQ AI anything..."
                 disabled={loading}
-                aria-label="Ask Cognify AI a question"
+                aria-label="Ask MentorIQ AI a question"
               />
 
               <button
@@ -298,7 +298,7 @@ function AIChat() {
             <div className="cognify-input-footer">
               <span>↵ Enter to send</span>
               <span>
-                Cognify AI may make mistakes. Verify important information.
+                MentorIQ AI may make mistakes. Verify important information.
               </span>
             </div>
           </form>
@@ -335,8 +335,8 @@ function AIChat() {
         </section>
 
         <footer className="cognify-ai-footer">
-          <span>✦ Cognify AI</span>
-          <span>Learn smarter. Grow further.</span>
+          <span>✦ MentorIQ AI</span>
+          <span>Your Personal AI Learning & Coding Mentor</span>
         </footer>
       </main>
     </div>

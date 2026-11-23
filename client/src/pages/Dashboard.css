@@ -1193,3 +1193,438 @@
     transition-duration: 0.01ms !important;
   }
 }
+
+
+/* =========================================
+   COGNIFY AI - ANIMATED NEON AURORA THEME
+   Cyan / Violet / Blue / Magenta
+========================================= */
+
+.cognify-dashboard {
+  --bg: #080b1a;
+  --panel: rgba(17, 23, 48, 0.82);
+  --panel-light: rgba(30, 39, 75, 0.88);
+  --panel-hover: rgba(42, 48, 94, 0.95);
+
+  --accent: #22d3ee;
+  --accent-light: #a5f3fc;
+  --gold: #f0abfc;
+
+  --text: #f1f5ff;
+  --muted: #a2aecb;
+  --border: rgba(139, 156, 255, 0.19);
+
+  position: relative;
+  isolation: isolate;
+  background: #080b1a;
+}
+
+/* ANIMATED AURORA BACKGROUND */
+
+.cognify-dashboard::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  pointer-events: none;
+
+  background:
+    radial-gradient(
+      ellipse at 10% 15%,
+      rgba(34, 211, 238, 0.22),
+      transparent 38%
+    ),
+    radial-gradient(
+      ellipse at 85% 15%,
+      rgba(139, 92, 246, 0.24),
+      transparent 38%
+    ),
+    radial-gradient(
+      ellipse at 50% 90%,
+      rgba(217, 70, 239, 0.17),
+      transparent 42%
+    ),
+    linear-gradient(135deg, #080b1a, #10132d, #11102b, #080b1a);
+
+  background-size: 200% 200%;
+  animation: cognifyAurora 16s ease-in-out infinite alternate;
+}
+
+.cognify-dashboard::after {
+  content: "";
+  position: fixed;
+  inset: -20%;
+  z-index: -1;
+  pointer-events: none;
+
+  background:
+    radial-gradient(
+      circle at 25% 35%,
+      rgba(34, 211, 238, 0.13),
+      transparent 20%
+    ),
+    radial-gradient(
+      circle at 75% 65%,
+      rgba(168, 85, 247, 0.16),
+      transparent 24%
+    ),
+    radial-gradient(
+      circle at 50% 50%,
+      rgba(236, 72, 153, 0.08),
+      transparent 30%
+    );
+
+  filter: blur(45px);
+  animation: cognifyGlowMove 18s ease-in-out infinite alternate;
+}
+
+@keyframes cognifyAurora {
+  0% {
+    background-position: 0% 0%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 100%;
+  }
+}
+
+@keyframes cognifyGlowMove {
+  0% {
+    transform: translate(-3%, -2%) scale(1);
+  }
+  50% {
+    transform: translate(3%, 2%) scale(1.08);
+  }
+  100% {
+    transform: translate(-2%, 4%) scale(1.03);
+  }
+}
+
+/* HEADER */
+
+.cognify-header {
+  background: rgba(8, 11, 26, 0.78);
+  border-bottom: 1px solid rgba(139, 156, 255, 0.2);
+  box-shadow: 0 8px 35px rgba(0, 0, 0, 0.16);
+}
+
+.cognify-brand-icon,
+.cognify-avatar {
+  background: linear-gradient(135deg, #22d3ee, #8b5cf6, #d946ef);
+  color: #ffffff;
+  box-shadow: 0 0 25px rgba(34, 211, 238, 0.28);
+}
+
+.cognify-top-nav button:hover,
+.cognify-top-nav .top-nav-active {
+  color: #a5f3fc;
+  background: rgba(34, 211, 238, 0.12);
+}
+
+.cognify-logout:hover {
+  border-color: #22d3ee;
+  color: #67e8f9;
+}
+
+/* HEADINGS */
+
+.cognify-eyebrow {
+  color: #67e8f9;
+}
+
+.cognify-slide-count span {
+  color: #22d3ee;
+}
+
+/* WELCOME PANEL */
+
+.welcome-panel {
+  background:
+    radial-gradient(
+      circle at 80% 40%,
+      rgba(139, 92, 246, 0.28),
+      transparent 35%
+    ),
+    radial-gradient(
+      circle at 10% 90%,
+      rgba(34, 211, 238, 0.16),
+      transparent 40%
+    ),
+    linear-gradient(120deg, #151b3d, #10152d 65%, #24143b);
+
+  border-color: rgba(139, 156, 255, 0.25);
+  box-shadow: 0 15px 45px rgba(0, 0, 0, 0.2);
+}
+
+.welcome-copy p {
+  color: #c0cbea;
+}
+
+.cognify-primary-button {
+  background: linear-gradient(120deg, #22d3ee, #6366f1, #c084fc);
+  color: #ffffff;
+  box-shadow: 0 7px 25px rgba(99, 102, 241, 0.25);
+}
+
+.cognify-primary-button:hover {
+  box-shadow: 0 12px 30px rgba(139, 92, 246, 0.38);
+}
+
+.welcome-symbol {
+  color: #a5f3fc;
+  background: rgba(34, 211, 238, 0.1);
+  border-color: rgba(165, 243, 252, 0.3);
+  box-shadow: 0 0 55px rgba(34, 211, 238, 0.2);
+}
+
+.welcome-orbit {
+  border-color: rgba(165, 243, 252, 0.25);
+}
+
+.welcome-art > span {
+  color: #c4b5fd;
+}
+
+/* GLASSMORPHISM CARDS */
+
+.cognify-stat-card,
+.cognify-section-card {
+  background: rgba(17, 23, 48, 0.76);
+  border: 1px solid rgba(139, 156, 255, 0.2);
+  backdrop-filter: blur(18px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+.cognify-stat-card {
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.35s ease, border-color 0.35s ease,
+    box-shadow 0.35s ease;
+}
+
+.cognify-stat-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 70%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #22d3ee, #c084fc);
+  transition: left 0.6s ease;
+}
+
+.cognify-stat-card:hover::before {
+  left: 100%;
+}
+
+.cognify-stat-card:hover,
+.cognify-section-card:hover {
+  border-color: rgba(34, 211, 238, 0.38);
+  box-shadow: 0 15px 40px rgba(34, 211, 238, 0.08);
+}
+
+.cognify-stat-icon,
+.cognify-section-icon,
+.current-study-symbol,
+.insights-glow,
+.action-card-icon {
+  background: linear-gradient(
+    135deg,
+    rgba(34, 211, 238, 0.17),
+    rgba(139, 92, 246, 0.2)
+  );
+  color: #a5f3fc;
+}
+
+/* CURRENT STUDY */
+
+.cognify-current-study {
+  background: rgba(30, 39, 75, 0.7);
+  border-color: rgba(139, 156, 255, 0.2);
+}
+
+.current-study-details > span {
+  color: #67e8f9;
+}
+
+.current-study-meta span {
+  background: rgba(139, 92, 246, 0.15);
+  color: #ddd6fe;
+}
+
+.cognify-outline-button {
+  border-color: rgba(34, 211, 238, 0.5);
+  color: #a5f3fc;
+}
+
+.cognify-outline-button:hover {
+  background: rgba(34, 211, 238, 0.12);
+}
+
+/* ANALYTICS */
+
+.accuracy-ring {
+  background: conic-gradient(
+    #22d3ee var(--accuracy),
+    #8b5cf6 var(--accuracy),
+    #252d52 var(--accuracy)
+  );
+  box-shadow: 0 0 30px rgba(34, 211, 238, 0.12);
+}
+
+.accuracy-ring-inner {
+  background: #111730;
+}
+
+.accuracy-ring-inner strong {
+  color: #a5f3fc;
+}
+
+.metric-track {
+  background: #252d52;
+}
+
+.metric-fill,
+.metric-correct {
+  background: linear-gradient(90deg, #22d3ee, #8b5cf6, #c084fc);
+}
+
+.metric-wrong {
+  background: linear-gradient(90deg, #f472b6, #fb923c);
+}
+
+.metric-row strong,
+.subject-performance-top span {
+  color: #c4b5fd;
+}
+
+.time-summary {
+  background: rgba(30, 39, 75, 0.78);
+}
+
+.time-summary strong {
+  color: #a5f3fc;
+}
+
+/* AI INSIGHTS */
+
+.insights-banner {
+  background:
+    radial-gradient(
+      circle at 90% 40%,
+      rgba(217, 70, 239, 0.2),
+      transparent 32%
+    ),
+    linear-gradient(120deg, #171d40, #111730, #21163c);
+}
+
+.insights-glow {
+  color: #e9d5ff;
+}
+
+.insight-item-icon {
+  background: rgba(139, 92, 246, 0.16);
+}
+
+.insight-score {
+  color: #a5f3fc;
+}
+
+.recommendation-card {
+  background:
+    radial-gradient(
+      circle at 95% 10%,
+      rgba(34, 211, 238, 0.1),
+      transparent 32%
+    ),
+    rgba(17, 23, 48, 0.85);
+}
+
+.recommendation-icon {
+  color: #f0abfc;
+}
+
+.recommendation-item > span {
+  color: #22d3ee;
+}
+
+.recommendation-item p {
+  color: #c5cbea;
+}
+
+/* QUICK ACTIONS */
+
+.cognify-action-card {
+  background: rgba(17, 23, 48, 0.8);
+  border-color: rgba(139, 156, 255, 0.2);
+  backdrop-filter: blur(15px);
+}
+
+.cognify-action-card:hover {
+  background: rgba(30, 39, 75, 0.92);
+  border-color: rgba(34, 211, 238, 0.45);
+  box-shadow: 0 15px 40px rgba(99, 102, 241, 0.15);
+}
+
+.action-card-tag {
+  color: #67e8f9;
+}
+
+.action-card-link {
+  color: #c4b5fd;
+}
+
+/* BOTTOM NAVIGATION */
+
+.cognify-bottom-navigation {
+  background: rgba(12, 17, 38, 0.85);
+  border-color: rgba(139, 156, 255, 0.2);
+  backdrop-filter: blur(18px);
+}
+
+.slide-arrow {
+  background: rgba(30, 39, 75, 0.9);
+  color: #a5f3fc;
+}
+
+.slide-arrow:hover:not(:disabled) {
+  background: linear-gradient(135deg, #22d3ee, #8b5cf6);
+  color: #ffffff;
+}
+
+.slide-nav-item:hover {
+  background: rgba(34, 211, 238, 0.08);
+}
+
+.slide-nav-item.selected {
+  color: #a5f3fc;
+  background: rgba(34, 211, 238, 0.12);
+  border-color: rgba(34, 211, 238, 0.3);
+}
+
+.cognify-slide-dots button {
+  background: #41496c;
+}
+
+.cognify-slide-dots button.dot-active {
+  background: linear-gradient(90deg, #22d3ee, #a855f7);
+}
+
+/* LOADING */
+
+.cognify-spinner {
+  border-color: rgba(34, 211, 238, 0.15);
+  border-top-color: #22d3ee;
+}
+
+/* ACCESSIBILITY */
+
+@media (prefers-reduced-motion: reduce) {
+  .cognify-dashboard::before,
+  .cognify-dashboard::after {
+    animation: none !important;
+  }
+}
+

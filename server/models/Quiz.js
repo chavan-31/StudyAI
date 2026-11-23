@@ -14,6 +14,13 @@ const quizSchema = new mongoose.Schema(
       required: true,
     },
 
+    // Groups questions belonging to one quiz attempt
+    batchId: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      index: true,
+    },
+
     subject: {
       type: String,
       default: "",

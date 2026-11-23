@@ -36,7 +36,7 @@ function Login() {
 
         <div className="intro-content">
           <div className="intro-logo">
-            <span> C </span>
+            <span>M</span>
             <div className="logo-glow"></div>
           </div>
 
@@ -49,7 +49,7 @@ function Login() {
           </h1>
 
           <p className="intro-description">
-            Meet Cognify AI — your intelligent learning companion that
+            Meet MentorIQ AI — your intelligent learning companion that
             understands your goals, adapts to your level, and helps you grow.
           </p>
 
@@ -110,11 +110,11 @@ function Login() {
       <section className="login-section">
         <div className="login-card">
           <div className="login-brand">
-            <div className="brand-icon">C</div>
+            <div className="brand-icon">M</div>
 
             <div>
-              <h2>Cognify AI</h2>
-              <span>Intelligence meets learning</span>
+              <h2>MentorIQ AI</h2>
+              <span>Your Personal AI Learning & Coding Mentor</span>
             </div>
           </div>
 
@@ -165,7 +165,7 @@ function Login() {
                 </>
               ) : (
                 <>
-                  Sign in to Cognify AI
+                  Sign in to MentorIQ AI
                   <span> → </span>
                 </>
               )}
@@ -174,7 +174,7 @@ function Login() {
 
           <div className="login-divider">
             <span></span>
-            <p>NEW TO COGNIFY?</p>
+            <p>NEW TO MENTORIQ?</p>
             <span></span>
           </div>
 
@@ -190,7 +190,7 @@ function Login() {
         </div>
 
         <footer className="login-footer">
-          © Cognify AI · Context-Aware Intelligent Learning Platform
+          © MentorIQ AI · Your Personal AI Learning & Coding Mentor
         </footer>
       </section>
     </div>

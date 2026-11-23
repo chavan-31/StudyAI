@@ -53,62 +53,78 @@ function CodeAssistant() {
     loadContext();
   }, []);
 
-  // Extract only the actual AI response
+  // Extract actual AI response
   const formatResponse = (data) => {
-    let parsed = data;
-
-    // Handle JSON returned as a string
-    if (typeof parsed === "string") {
-      try {
-        parsed = JSON.parse(parsed);
-      } catch {
-        return parsed;
+    const extractResponse = (value, depth = 0) => {
+      if (depth > 5) {
+        return "Unable to extract the AI response.";
       }
-    }
 
-    // Extract the response field
-    let response =
-      parsed?.response ??
-      parsed?.result ??
-      parsed?.answer ??
-      parsed?.explanation ??
-      parsed?.message ??
-      parsed;
+      if (value === null || value === undefined) {
+        return "No response received from MentorIQ AI.";
+      }
 
-    // Handle nested JSON inside response
-    if (typeof response === "string") {
-      const trimmed = response.trim();
+      if (typeof value === "string") {
+        const trimmed = value.trim();
 
-      if (trimmed.startsWith("{") && trimmed.endsWith("}")) {
-        try {
-          const nested = JSON.parse(trimmed);
-
-          response =
-            nested?.response ??
-            nested?.result ??
-            nested?.answer ??
-            nested?.explanation ??
-            response;
-        } catch {
-          // Keep normal AI text
+        if (!trimmed) {
+          return "The AI returned an empty response.";
         }
-      }
-    }
 
-    return typeof response === "string"
-      ? response
-      : JSON.stringify(response, null, 2);
+        try {
+          const parsed = JSON.parse(trimmed);
+
+          if (typeof parsed === "object" && parsed !== null) {
+            return extractResponse(parsed, depth + 1);
+          }
+        } catch {
+          // Normal Markdown or text response
+        }
+
+        return value;
+      }
+
+      if (typeof value === "object") {
+        const responseKeys = [
+          "response",
+          "result",
+          "answer",
+          "explanation",
+          "output",
+          "data",
+          "message",
+        ];
+
+        for (const key of responseKeys) {
+          if (value[key] !== undefined && value[key] !== null) {
+            return extractResponse(value[key], depth + 1);
+          }
+        }
+
+        if ("success" in value || "mode" in value || "model" in value) {
+          return "MentorIQ AI received a response, but no explanation text was found.";
+        }
+
+        return JSON.stringify(value, null, 2);
+      }
+
+      return String(value);
+    };
+
+    return extractResponse(data);
   };
 
   // Shared API request handler
   const sendCodeRequest = async (requestMode) => {
     if (!code.trim()) {
       setMode(requestMode);
+
       setResult(
         requestMode === "debug"
           ? "Please enter your code before debugging."
           : "Please enter your code before requesting an explanation.",
       );
+
       return;
     }
 
@@ -142,6 +158,8 @@ function CodeAssistant() {
 
       const data = await response.json();
 
+      console.log("MENTORIQ AI API RESPONSE:", data);
+
       if (!response.ok) {
         throw new Error(
           data.message || data.error || "Unable to process your code.",
@@ -152,14 +170,17 @@ function CodeAssistant() {
         throw new Error(data.message || data.error || "AI analysis failed.");
       }
 
-      // Display only Gemini's actual response
-      setResult(formatResponse(data));
+      const formattedResponse = formatResponse(data);
+
+      console.log("MENTORIQ AI FORMATTED RESPONSE:", formattedResponse);
+
+      setResult(formattedResponse);
     } catch (err) {
       console.error(`${requestMode} code error:`, err);
 
-      setResult(
-        `## Something went wrong\n\n${err.message || "Please try again."}`,
-      );
+      setResult(`## Something went wrong
+
+${err.message || "Please try again."}`);
     } finally {
       setLoading(false);
     }
@@ -205,12 +226,13 @@ function CodeAssistant() {
           className="cognify-code-brand"
           onClick={() => navigate("/dashboard")}
         >
-          <div className="cognify-code-brand-icon">✦</div>
+          <div className="cognify-code-brand-icon">M</div>
+
           <div>
             <h2>
-              Cognify<span> AI</span>
+              Mentor<span>IQ AI</span>
             </h2>
-            <small>INTELLIGENT LEARNING PLATFORM</small>
+            <small>YOUR PERSONAL AI LEARNING & CODING MENTOR</small>
           </div>
         </div>
 
@@ -228,7 +250,7 @@ function CodeAssistant() {
 
       {/* Main content */}
       <main className="cognify-code-main">
-        {/* Hero */}
+        {/* Hero section */}
         <section className="cognify-code-hero">
           <div className="cognify-code-hero-text">
             <div className="cognify-code-eyebrow">
@@ -243,8 +265,9 @@ function CodeAssistant() {
             </h1>
 
             <p>
-              Understand complex code, discover errors and improve your
-              programming skills with your personalized AI coding assistant.
+              Meet MentorIQ AI, your personal coding mentor. Understand complex
+              code, discover errors and improve your programming skills with
+              personalized AI guidance.
             </p>
 
             <div className="cognify-code-hero-tags">
@@ -257,7 +280,7 @@ function CodeAssistant() {
           {/* 3D AI Core */}
           <div className="cognify-code-orb-area">
             <div className="cognify-code-orb-label">
-              <span></span> COGNITIVE AI CORE
+              <span></span> MENTORIQ AI CORE
             </div>
 
             <div className="cognify-code-orb-scene">
@@ -283,55 +306,119 @@ function CodeAssistant() {
           </div>
         </section>
 
-        {/* Study context */}
+        {/* Personalized Learning Context */}
         <section className="cognify-code-context">
           <div className="cognify-code-section-heading">
             <div>
               <span className="cognify-code-small-label">
-                PERSONALIZED INTELLIGENCE
+                ✦ YOUR PERSONALIZED LEARNING
               </span>
-              <h2>Your Learning Context</h2>
+
+              <h2>Learning Context</h2>
+
+              <p className="context-description">
+                MentorIQ AI understands your learning journey and adapts coding
+                explanations to your current study goals.
+              </p>
             </div>
 
             <div className="cognify-code-context-live">
-              <span></span> CONTEXT CONNECTED
+              <span></span>
+              CONTEXT CONNECTED
             </div>
           </div>
 
           <div className="cognify-code-context-grid">
+            {/* Subject card */}
             <div className="cognify-code-context-card">
-              <div className="context-icon">◈</div>
-              <span>SUBJECT</span>
+              <div className="context-card-top">
+                <div className="context-icon">◈</div>
+                <span className="context-number">01</span>
+              </div>
+
+              <span className="context-card-label">CURRENT SUBJECT</span>
+
               <strong>{studyContext.subject}</strong>
+
+              <small>Your learning domain</small>
+
+              <div className="context-card-line"></div>
             </div>
 
+            {/* Topic card */}
             <div className="cognify-code-context-card">
-              <div className="context-icon">⌘</div>
-              <span>TOPIC</span>
+              <div className="context-card-top">
+                <div className="context-icon">⌘</div>
+                <span className="context-number">02</span>
+              </div>
+
+              <span className="context-card-label">STUDY TOPIC</span>
+
               <strong>{studyContext.topic}</strong>
+
+              <small>What you're currently studying</small>
+
+              <div className="context-card-line"></div>
             </div>
 
+            {/* Level card */}
             <div className="cognify-code-context-card">
-              <div className="context-icon">◉</div>
-              <span>LEARNING LEVEL</span>
+              <div className="context-card-top">
+                <div className="context-icon">◉</div>
+                <span className="context-number">03</span>
+              </div>
+
+              <span className="context-card-label">YOUR LEVEL</span>
+
               <strong>{studyContext.difficulty}</strong>
+
+              <small>Personalized explanation level</small>
+
+              <div className="context-card-line"></div>
             </div>
 
+            {/* Goal card */}
             <div className="cognify-code-context-card goal-card">
-              <div className="context-icon">✧</div>
-              <span>YOUR GOAL</span>
+              <div className="context-card-top">
+                <div className="context-icon">✧</div>
+                <span className="context-number">04</span>
+              </div>
+
+              <span className="context-card-label">LEARNING GOAL</span>
+
               <strong>{studyContext.goal}</strong>
+
+              <small>Your learning objective</small>
+
+              <div className="context-card-line"></div>
             </div>
+          </div>
+
+          {/* Context AI information */}
+          <div className="context-ai-note">
+            <div className="context-ai-note-icon">✦</div>
+
+            <div>
+              <strong>Powered by contextual intelligence</strong>
+
+              <p>
+                Your code explanations and debugging suggestions use this study
+                context to make learning more relevant and easier to understand.
+              </p>
+            </div>
+
+            <span className="context-ai-pulse"></span>
           </div>
         </section>
 
-        {/* Workspace */}
+        {/* Code workspace */}
         <section className="cognify-code-workspace">
           <div className="cognify-code-workspace-heading">
             <div>
               <span className="cognify-code-small-label">
                 DEVELOPER WORKSPACE
               </span>
+
               <h2>Code Intelligence Studio</h2>
             </div>
 
@@ -341,7 +428,7 @@ function CodeAssistant() {
           </div>
 
           <div className="cognify-code-workspace-grid">
-            {/* Editor */}
+            {/* Code editor */}
             <div className="cognify-code-editor-panel">
               <div className="cognify-code-panel-header">
                 <div className="cognify-code-window-dots">
@@ -351,6 +438,7 @@ function CodeAssistant() {
                 </div>
 
                 <span>CODE EDITOR</span>
+
                 <span className="editor-live">● LIVE</span>
               </div>
 
@@ -381,14 +469,14 @@ function CodeAssistant() {
                 <textarea
                   value={code}
                   onChange={(e) => setCode(e.target.value)}
-                  placeholder={`// Welcome to Cognify AI Code Assistant
+                  placeholder={`// Welcome to MentorIQ AI Code Assistant
 
 // Write or paste your ${language} code here.
 
 // Example:
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Hello Cognify AI!");
+        System.out.println("Hello MentorIQ AI!");
     }
 }`}
                   spellCheck="false"
@@ -405,7 +493,9 @@ public class Main {
             <div className="cognify-code-error-panel">
               <div className="cognify-code-panel-header">
                 <span className="error-header-icon">⚠</span>
+
                 <span>ERROR DETAILS</span>
+
                 <span className="optional-label">OPTIONAL</span>
               </div>
 
@@ -415,8 +505,8 @@ public class Main {
                 <h3>Facing a coding error?</h3>
 
                 <p>
-                  Paste your compiler or runtime error message below. Cognify AI
-                  will help identify the problem.
+                  Paste your compiler or runtime error message below. MentorIQ
+                  AI will help identify the problem.
                 </p>
 
                 <textarea
@@ -430,7 +520,7 @@ SyntaxError: invalid syntax`}
                 />
 
                 <div className="error-hint">
-                  ✦ You can leave this empty. Cognify AI can inspect your code
+                  ✦ You can leave this empty. MentorIQ AI can inspect your code
                   for errors.
                 </div>
               </div>
@@ -445,10 +535,12 @@ SyntaxError: invalid syntax`}
               disabled={loading}
             >
               <span className="btn-icon">✧</span>
+
               <span>
                 <strong>Explain Code</strong>
                 <small>Understand every step</small>
               </span>
+
               <span className="btn-arrow">↗</span>
             </button>
 
@@ -458,10 +550,12 @@ SyntaxError: invalid syntax`}
               disabled={loading}
             >
               <span className="btn-icon">⌘</span>
+
               <span>
                 <strong>Debug Code</strong>
                 <small>Find and fix errors</small>
               </span>
+
               <span className="btn-arrow">↗</span>
             </button>
 
@@ -471,6 +565,7 @@ SyntaxError: invalid syntax`}
               disabled={loading}
             >
               <span className="btn-icon">↺</span>
+
               <span>
                 <strong>Clear Workspace</strong>
                 <small>Start fresh</small>
@@ -479,13 +574,14 @@ SyntaxError: invalid syntax`}
           </div>
         </section>
 
-        {/* AI result */}
+        {/* AI Result */}
         <section className="cognify-code-result-section">
           <div className="cognify-code-section-heading">
             <div>
               <span className="cognify-code-small-label">
                 INTELLIGENT ANALYSIS
               </span>
+
               <h2>AI Analysis Result</h2>
             </div>
 
@@ -502,12 +598,12 @@ SyntaxError: invalid syntax`}
               <div className="result-topline">
                 <strong>
                   {loading
-                    ? "Cognify AI is thinking..."
+                    ? "MentorIQ AI is thinking..."
                     : mode === "explain"
                       ? "CODE EXPLANATION"
                       : mode === "debug"
                         ? "DEBUGGING ANALYSIS"
-                        : "COGNIFY AI RESPONSE"}
+                        : "MENTORIQ AI RESPONSE"}
                 </strong>
 
                 <span>✦ GEMINI INTELLIGENCE</span>
@@ -533,6 +629,7 @@ SyntaxError: invalid syntax`}
                       pre({ children }) {
                         return <>{children}</>;
                       },
+
                       code({ className, children, ...props }) {
                         const isBlock = Boolean(className);
 
@@ -554,9 +651,11 @@ SyntaxError: invalid syntax`}
               ) : (
                 <div className="cognify-code-empty-result">
                   <h3>Waiting for your code...</h3>
+
                   <p>
                     Your AI explanation or debugging solution will appear here.
                   </p>
+
                   <span>✧ YOUR PERSONALIZED AI CODING MENTOR</span>
                 </div>
               )}
@@ -567,18 +666,22 @@ SyntaxError: invalid syntax`}
         {/* Bottom tip */}
         <div className="cognify-code-tip">
           <div className="tip-icon">✦</div>
+
           <div>
             <strong>LEARN SMARTER WITH CONTEXT AI</strong>
+
             <p>
-              Cognify AI uses your learning subject, topic, level and goal to
+              MentorIQ AI uses your learning subject, topic, level and goal to
               make explanations easier to understand.
             </p>
           </div>
         </div>
 
+        {/* Footer */}
         <footer className="cognify-code-footer">
-          <span>COGNIFY AI © 2026</span>
-          <span>BUILT FOR INTELLIGENT LEARNING ✦</span>
+          <span>MENTORIQ AI © 2026</span>
+
+          <span>YOUR PERSONAL AI LEARNING & CODING MENTOR ✦</span>
         </footer>
       </main>
     </div>

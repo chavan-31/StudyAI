@@ -65,11 +65,11 @@ function Register() {
       {/* LEFT SIDE */}
       <section className="register-intro">
         <div className="register-logo">
-          <span>AI</span>
+          <span>M</span>
           <div className="register-logo-glow"></div>
         </div>
 
-        <div className="register-label">JOIN STUDYAI</div>
+        <div className="register-label">JOIN MENTORIQ AI</div>
 
         <h1>
           Start your
@@ -78,8 +78,8 @@ function Register() {
         </h1>
 
         <p className="register-description">
-          Create your StudyAI account and get a personalized learning experience
-          powered by context-aware AI.
+          Create your MentorIQ AI account and get a personalized learning
+          experience powered by intelligent AI technology.
         </p>
 
         {/* 3D NEURAL SPHERE */}
@@ -127,10 +127,10 @@ function Register() {
         <div className="register-card">
           {/* BRAND */}
           <div className="register-brand">
-            <div className="register-brand-icon">AI</div>
+            <div className="register-brand-icon">M</div>
             <div>
-              <h2>StudyAI</h2>
-              <span>Context Engine</span>
+              <h2>MentorIQ AI</h2>
+              <span>Your Personal AI Learning & Coding Mentor</span>
             </div>
           </div>
 
@@ -236,7 +236,7 @@ function Register() {
         </div>
 
         <footer className="register-footer">
-          AI Study Assistant · Learn with context
+          © MentorIQ AI · Your Personal AI Learning & Coding Mentor
         </footer>
       </section>
     </main>

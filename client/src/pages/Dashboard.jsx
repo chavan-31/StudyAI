@@ -144,10 +144,10 @@ function Dashboard() {
       {/* HEADER */}
       <header className="cognify-header">
         <div className="cognify-brand">
-          <div className="cognify-brand-icon">C</div>
+          <div className="cognify-brand-icon">M</div>
           <div>
-            <h2>Cognify AI</h2>
-            <span>Context-Aware Learning</span>
+            <h2>MentorIQ AI</h2>
+            <span>Your Personal AI Learning & Coding Mentor</span>
           </div>
         </div>
 
@@ -313,7 +313,7 @@ function Dashboard() {
                   <div className="cognify-empty">
                     <span>📚</span>
                     <h3>Start your first study session</h3>
-                    <p>Create a session and let Cognify AI guide you.</p>
+                    <p>Create a session and let MentorIQ AI guide you.</p>
                     <button
                       className="cognify-primary-button"
                       onClick={() => navigate("/study")}

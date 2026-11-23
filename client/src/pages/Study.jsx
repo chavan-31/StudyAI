@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { getStudySessions, createStudySession } from "../services/api";
 import { useAuth } from "../context/AuthContext";
 import "./Study.css";
 
 function Study() {
   const { token } = useAuth();
+  const navigate = useNavigate();
 
   const [form, setForm] = useState({
     subject: "Java",
@@ -86,6 +88,10 @@ function Study() {
     if (value.includes("data")) return "📊";
 
     return "📚";
+  };
+
+  const openSession = (sessionId) => {
+    navigate(`/study/${sessionId}`);
   };
 
   return (
@@ -252,7 +258,21 @@ function Study() {
                 );
 
                 return (
-                  <article className="session-card" key={session._id}>
+                  <article
+                    className="session-card"
+                    key={session._id}
+                    onClick={() => openSession(session._id)}
+                    onKeyDown={(event) => {
+                      if (event.key === "Enter" || event.key === " ") {
+                        event.preventDefault();
+                        openSession(session._id);
+                      }
+                    }}
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`Open ${session.subject} ${session.topic} study session`}
+                    style={{ cursor: "pointer" }}
+                  >
                     <div className="card-top">
                       <div className="subject-icon">
                         {getSubjectIcon(session.subject)}
@@ -293,6 +313,22 @@ function Study() {
                       ></div>
                     </div>
 
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: "12px",
+                        flexWrap: "wrap",
+                        marginTop: "14px",
+                        fontSize: "12px",
+                      }}
+                    >
+                      <span>
+                        {session.lessonCompleted ? "✓ Lesson" : "○ Lesson"}
+                      </span>
+
+                      <span>{session.quizCompleted ? "✓ Quiz" : "○ Quiz"}</span>
+                    </div>
+
                     <div className="card-footer">
                       <span
                         className={`status ${
@@ -305,7 +341,7 @@ function Study() {
                         {session.status || "active"}
                       </span>
 
-                      <span className="session-arrow">↗</span>
+                      <span className="session-arrow">Continue Learning →</span>
                     </div>
                   </article>
                 );
